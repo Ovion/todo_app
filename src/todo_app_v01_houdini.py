@@ -2,9 +2,20 @@ from PySide2 import QtCore, QtGui, QtWidgets
 from PySide2.QtWidgets import QMessageBox
 from datetime import datetime
 import sqlite3
+import os
 
 
-conn = sqlite3.connect("todo.db")
+# Create db path
+path_db="database"
+cwd = os.getcwd()
+path_full = f"{cwd}\\{path_db}"
+
+if not os.path.isdir(path_full):
+    os.mkdir(path_full)
+
+
+# Create db at dbpath
+conn = sqlite3.connect("database/todo.db")
 c = conn.cursor()
 c.execute("""CREATE TABLE if not exists remain_list(
     list_item text)
@@ -15,6 +26,8 @@ c.execute("""CREATE TABLE if not exists completed_list(
 conn.commit()
 conn.close()
 
+
+#Create widget
 class Ui_ToDoApp(object):
     def setupUi(self, ToDoApp):
         ToDoApp.setObjectName("ToDoApp")
@@ -155,7 +168,7 @@ class Ui_ToDoApp(object):
         self.grab_remain()
 
     def grab_remain(self):
-        conn = sqlite3.connect("todo.db")
+        conn = sqlite3.connect("database/todo.db")
         c = conn.cursor()
 
         c.execute("SELECT * FROM remain_list")
@@ -187,7 +200,7 @@ class Ui_ToDoApp(object):
         self.remain_listWidget.takeItem(num)
 
     def save_all(self):
-        conn = sqlite3.connect("todo.db")
+        conn = sqlite3.connect("database/todo.db")
         c = conn.cursor()
 
         c.execute("DELETE FROM remain_list;",)
